@@ -15,12 +15,13 @@ def tampilkan_hasil_diagnosa(hasil):
         cf_tertinggi = hasil[0]['cf']
         for penyakit in hasil:
             if penyakit['cf'] == cf_tertinggi:
-                # Calculate the percentage of certainty
                 persentase_cf = round(penyakit['cf'] * 100, 2)
                 st.success(
-                    f"**Penyakit:** {penyakit['nama']} \n"
+                    f"**Penyakit:** {penyakit['nama']}  \n"
                     f"**Akurasi:** {persentase_cf}%"
                 )
+                with st.expander("💡 Saran Penanganan"):
+                    st.write(penyakit['solusi'])
     else:
         # Display a message if no disease is detected
         st.write("Tidak ada penyakit yang terdeteksi berdasarkan gejala yang diberikan.")

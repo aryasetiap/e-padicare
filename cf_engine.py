@@ -7,21 +7,21 @@ bobot_gejala = {
     "G17": 0.6, "G18": 0.8, "G19": 0.8
 }
 
-# Aturan (rules) yang menghubungkan penyakit dengan gejala-gejalanya
+# Aturan (rules) yang menghubungkan penyakit dengan gejala-gejalanya dan solusinya
 rules = {
-    "P1": {"nama": "Blast", "gejala": ["G1", "G2"]},
-    "P2": {"nama": "Hawar Daun", "gejala": ["G3"]},
-    "P3": {"nama": "Hawar Pelepah", "gejala": ["G4", "G16", "G17"]},
-    "P4": {"nama": "Busuk Leher", "gejala": ["G2", "G5"]},
-    "P5": {"nama": "Gosong Akar", "gejala": ["G6", "G7"]},
-    "P6": {"nama": "Hawar Daun Bakteri", "gejala": ["G9", "G7"]},
-    "P7": {"nama": "Bercak Daun Bakteri", "gejala": ["G8"]},
-    "P8": {"nama": "Tungro", "gejala": ["G9", "G10", "G11"]},
-    "P9": {"nama": "Kerdil Rumput", "gejala": ["G11", "G10"]},
-    "P10": {"nama": "Kerdil Hampa", "gejala": ["G11", "G12"]},
-    "P11": {"nama": "Busuk Batang", "gejala": ["G13", "G7", "G14"]},
-    "P12": {"nama": "Karat Daun Padi", "gejala": ["G15"]},
-    "P13": {"nama": "Fusarium", "gejala": ["G18", "G19"]}
+    "P1": {"nama": "Blast", "gejala": ["G1", "G2"], "solusi": "Gunakan varietas tahan seperti Inpari 30, tanam dengan jarak cukup, hindari pupuk nitrogen berlebih, dan semprot fungisida berbahan triazol atau strobilurin."},
+    "P2": {"nama": "Hawar Daun", "gejala": ["G3"], "solusi": "Gunakan varietas tahan, musnahkan sisa tanaman sakit, beri pupuk seimbang, dan semprot fungisida seperti mankozeb."},
+    "P3": {"nama": "Hawar Pelepah", "gejala": ["G4", "G16", "G17"], "solusi": "Perbaiki drainase, hindari tanam terlalu rapat, dan semprot fungisida sistemik saat gejala awal."},
+    "P4": {"nama": "Busuk Leher", "gejala": ["G2", "G5"], "solusi": "Gunakan benih sehat, semprot fungisida saat pembungaan, dan keringkan lahan secara berkala."},
+    "P5": {"nama": "Gosong Akar", "gejala": ["G6", "G7"], "solusi": "Gunakan pupuk kandang matang, hindari genangan, dan aplikasi Trichoderma sp."},
+    "P6": {"nama": "Hawar Daun Bakteri", "gejala": ["G9", "G7"], "solusi": "Gunakan benih bersertifikat, semprot bakterisida tembaga, dan hindari pupuk nitrogen berlebih."},
+    "P7": {"nama": "Bercak Daun Bakteri", "gejala": ["G8"], "solusi": "Tanam varietas tahan, bersihkan gulma, dan semprot bakterisida berbasis tembaga."},
+    "P8": {"nama": "Tungro", "gejala": ["G9", "G10", "G11"], "solusi": "Gunakan varietas tahan seperti Inpari 33, tanam serempak, dan kendalikan wereng hijau."},
+    "P9": {"nama": "Kerdil Rumput", "gejala": ["G11", "G10"], "solusi": "Kendalikan wereng coklat, tanam serempak, dan gunakan benih sehat."},
+    "P10": {"nama": "Kerdil Hampa", "gejala": ["G11", "G12"], "solusi": "Kendalikan wereng, gunakan insektisida seperti imidakloprid, dan hindari tanam saat kemarau ekstrem."},
+    "P11": {"nama": "Busuk Batang", "gejala": ["G13", "G7", "G14"], "solusi": "Perbaiki drainase, bersihkan jerami sisa, dan semprot fungisida saat awal gejala."},
+    "P12": {"nama": "Karat Daun Padi", "gejala": ["G15"], "solusi": "Gunakan fungisida sistemik, beri pupuk kalium-fosfor, dan jaga jarak tanam optimal."},
+    "P13": {"nama": "Fusarium", "gejala": ["G18", "G19"], "solusi": "Gunakan fungisida seperti benomil, tanam varietas tahan, dan hindari tumpang sari dengan tanaman inang."}
 }
 
 def hitung_cf_gejala(kode_gejala, input_user, bobot_gejala):
@@ -82,7 +82,8 @@ def inferensi_cf(input_user):
             hasil.append({
                 "kode": kode_p,
                 "nama": data["nama"],
-                "cf": round(cf_total, 3)  # Simpan hasil dengan pembulatan 3 desimal
+                "cf": round(cf_total, 3),
+                "solusi": data.get("solusi", "Belum ada solusi tersedia.")
             })
     # Urutkan hasil berdasarkan nilai CF secara menurun
     hasil.sort(key=lambda x: x["cf"], reverse=True)

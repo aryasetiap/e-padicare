@@ -7,6 +7,7 @@ bobot_gejala = {
     "G17": 0.6, "G18": 0.8, "G19": 0.8
 }
 
+# knowledge base (basis pengetahuan) untuk penyakit padi
 # Aturan (rules) yang menghubungkan penyakit dengan gejala-gejalanya dan solusinya
 rules = {
     "P1": {"nama": "Blast", "gejala": ["G1", "G2"], "solusi": "Gunakan varietas tahan seperti Inpari 30, tanam dengan jarak cukup, hindari pupuk nitrogen berlebih, dan semprot fungisida berbahan triazol atau strobilurin."},

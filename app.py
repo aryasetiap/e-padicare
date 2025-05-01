@@ -1,20 +1,18 @@
 import streamlit as st
-from cf_engine import inferensi_cf
+from cf_engine import inferensi_cf, gejala
+import time
 
-# Function to display the diagnosis results
 def tampilkan_hasil_diagnosa(hasil):
     """
-    Menampilkan hasil diagnosa berdasarkan hasil inferensi CF.
-
-    Args:
-        hasil (list): List hasil diagnosa yang berisi nama penyakit dan nilai CF.
+    Menampilkan hasil diagnosa berdasarkan hasil inferensi Certainty Factor (CF).
     """
     if hasil:
-        # Sort the results by certainty factor (CF) in descending order
         hasil.sort(key=lambda x: x['cf'], reverse=True)
-        cf_tertinggi = hasil[0]['cf']
+        st.subheader("🌾 Hasil Diagnosa:")
+
+        ditampilkan = 0
         for penyakit in hasil:
-            if penyakit['cf'] == cf_tertinggi:
+            if penyakit['cf'] > 0.4:  # Tampilkan hanya penyakit dengan CF > 0.4
                 persentase_cf = round(penyakit['cf'] * 100, 2)
                 st.success(
                     f"**Penyakit:** {penyakit['nama']}  \n"
@@ -22,71 +20,78 @@ def tampilkan_hasil_diagnosa(hasil):
                 )
                 with st.expander("💡 Saran Penanganan"):
                     st.write(penyakit['solusi'])
+                ditampilkan += 1
+
+        if ditampilkan == 0:
+            st.info("Tidak ada penyakit dengan tingkat kepastian yang cukup tinggi. Silakan tambahkan beberapa gejala lagi.")
     else:
-        # Display a message if no disease is detected
         st.write("Tidak ada penyakit yang terdeteksi berdasarkan gejala yang diberikan.")
 
-# Function to handle user input for symptoms
 def input_gejala():
     """
-    Menampilkan antarmuka untuk pengguna memilih gejala dan melakukan diagnosa.
+    Menampilkan antarmuka pengguna untuk memilih gejala dan tingkat keyakinan,
+    serta melakukan diagnosa penyakit berdasarkan input pengguna.
     """
-    # Title and header for the application
-    st.title("Sistem Pakar Diagnosis Penyakit Tanaman Padi 🌾🧑‍🌾👩‍🌾")
-    st.image("image.png", use_container_width=True)
-    st.write("Pilih gejala yang muncul pada tanaman padi Anda:")
+    tab1, tab2 = st.tabs(["🏠 Home", "🧪 Diagnosa"])
 
-    # Dictionary to store user input
-    input_user = {}
-    # List of symptoms and their descriptions
-    gejala = {
-        "G1": "Bercak belah ketupat di daun", 
-        "G2": "Malai busuk", 
-        "G3": "Bercak coklat besar di daun", 
-        "G4": "Lesi abu/coklat di pelepah", 
-        "G5": "Malai tidak tumbuh", 
-        "G6": "Akar hitam", 
-        "G7": "Tanaman layu", 
-        "G8": "Garis coklat di daun", 
-        "G9": "Ujung daun menguning", 
-        "G10": "Banyak anakan", 
-        "G11": "Tanaman kerdil", 
-        "G12": "Daun sobek", 
-        "G13": "Batang membusuk", 
-        "G14": "Tanaman roboh", 
-        "G15": "Bercak oranye di daun", 
-        "G16": "Pelepah membusuk", 
-        "G17": "Pelepah kering", 
-        "G18": "Lesi/nekrosis di daun", 
-        "G19": "Malai patah"
-    }
-
-    for g in gejala:
-        confidence = st.radio(
-            f"Seberapa yakin Anda dengan gejala: {gejala[g]}?",
-            options=["Sangat Tidak Yakin", "Tidak Yakin", "Yakin", "Sangat Yakin"],
-            index=0
-        )
+    with tab1:
+        st.markdown("""
+        **e-PadiCare** adalah Sistem Pakar untuk membantu petani dalam mendiagnosis penyakit pada tanaman padi  
+        berdasarkan gejala-gejala yang muncul menggunakan metode *Certainty Factor (CF)*.
         
-        if confidence == "Sangat Tidak Yakin":
-            input_user[g] = 0.0
-        elif confidence == "Tidak Yakin":
-            input_user[g] = 0.33
-        elif confidence == "Yakin":
-            input_user[g] = 0.66
-        elif confidence == "Sangat Yakin":
-            input_user[g] = 1.0
+        👉 Silakan buka tab **Diagnosa** untuk memulai pengecekan.  
+        """)
+        st.markdown("---")
+        st.subheader("Tentang Pengembang")
+        st.markdown("""
+        - 👨‍💻 **Arya Setia Pratama** (2215061034)  
+        - 👩‍💻 **Amalia Rizki Puspadewi** (2215061081)  
+        - 👩‍💻 **Tri Novita** (2215061079)  
 
-    if st.button("Diagnosa"):
-        if all(value == 0.0 for value in input_user.values()):
-            st.warning("Harap pilih minimal satu gejala!")
-        else:
-            hasil = inferensi_cf(input_user)
-            tampilkan_hasil_diagnosa(hasil)
+        Program Studi Teknik Informatika  
+        Universitas Lampung - 2025
+        """)
+
+    with tab2:
+        st.header("Diagnosa Penyakit Tanaman Padi 🌾")
+        st.write("Pilih gejala yang muncul pada tanaman padi Anda, lalu atur tingkat keyakinan terhadap gejala tersebut:")
+
+        input_user = {}
+        jumlah_dipilih = 0
+
+        st.markdown("### Pilih Gejala dan Tingkat Keyakinan")
+        for g in gejala:
+            with st.expander(f"🌱 {gejala[g]}", expanded=False):
+                dipilih = st.checkbox(f"Saya mengalami gejala ini", key=f"check_{g}")
+                if dipilih:
+                    confidence = st.slider(
+                        "Seberapa yakin Anda?",
+                        min_value=0.3,
+                        max_value=1.0,
+                        value=0.66,
+                        step=0.1,
+                        key=f"slider_{g}"
+                    )
+                    input_user[g] = confidence
+                    jumlah_dipilih += 1
+
+        if st.button("🔍 Diagnosa Sekarang"):
+            if jumlah_dipilih == 0:
+                st.warning("Harap pilih minimal satu gejala untuk didiagnosa.")
+            else:
+                with st.spinner("🔄 Menganalisis gejala..."):
+                    time.sleep(1.5)  # Simulasi proses agar spinner sempat muncul
+                    hasil = inferensi_cf(input_user)
+                    tampilkan_hasil_diagnosa(hasil)
+
+# Judul utama aplikasi
+st.title("Selamat Datang di E-PadiCare 🌾")
+st.image("image.png", use_container_width=True)
 
 if __name__ == "__main__":
     input_gejala()
 
+# Footer aplikasi
 st.markdown("---")
 st.markdown(
     """

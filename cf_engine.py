@@ -1,29 +1,147 @@
-# Bobot gejala yang digunakan untuk menghitung nilai CF (Certainty Factor) berdasarkan input pengguna
-bobot_gejala = {
-    "G1": 0.9, "G2": 0.7, "G3": 0.8, "G4": 0.7,
-    "G5": 0.6, "G6": 0.6, "G7": 0.3, "G8": 0.8,
-    "G9": 0.5, "G10": 0.5, "G11": 0.4, "G12": 0.7,
-    "G13": 0.6, "G14": 0.5, "G15": 0.9, "G16": 0.6,
-    "G17": 0.6, "G18": 0.8, "G19": 0.8
+# List Gejala dan Bobot
+gejala_list = [
+    ("G001", "Padi mengalami kerusakan sejak dari pesemaian hingga dalam penyimpanan", 0.9),
+    ("G002", "Tanaman yang terserang banyak bekas potongan dan terdapat bekas gigitan", 0.9),
+    ("G003", "Kerusakan tanaman banyak kelihatan pada pagi hari", 0.9),
+    ("G004", "Daun dan batang hilang dari pertanaman", 0.9),
+    ("G005", "Banyak potongan daun dan batang terlihat mengambang", 0.9),
+    ("G006", "Padi banyak terserang saat fase matang susu sampai pemasakan biji (sebelum panen)", 0.9),
+    ("G007", "Banyak biji hampa dan hilang", 0.9),
+    ("G008", "Banyaknya kupu-kupu kecil berwarna putih pada sore dan malam hari", 0.9),
+    ("G009", "Banyak daun padi muda menguning dan mati", 0.9),
+    ("G010", "Padi yang sedang bunting buliran padinya keluar, berguguran, gabah-gabah kosong dan berwarna keabu-abuan", 0.7),
+    ("G011", "Banyak binatang kecil di tempat lembab, gelap dan teduh", 0.6),
+    ("G012", "Banyak malai dan bulir padi yang hampa", 0.4),
+    ("G013", "Tanaman kerdil", 0.2),
+    ("G014", "Tanaman padi terserang pada fase masak susu", 0.9),
+    ("G015", "Terdapat bekas tusukan dan pecah", 0.9),
+    ("G016", "Daun menggulung rapat seperti daun bawang", 0.9),
+    ("G017", "Daun memucat, menguning, akhirnya kering", 0.9),
+    ("G018", "Daun terpotong seperti digunting", 0.9),
+    ("G019", "Tanaman padi yang diserang kebanyakan berasal dari bibit-bibit lemah", 0.9),
+    ("G020", "Tanaman terpotong pada pangkal batang", 0.9),
+    ("G021", "Rusaknya akar muda dan bagian pangkal tanaman yang berada di bawah tanah", 0.9),
+    ("G022", "Tanaman padi muda yang diserang mati sehingga terlihat adanya spot-spot kosong di sawah", 0.9),
+    ("G023", "Warna daun menjadi kemerahan, atau daun-daun luar menguning, akhirnya menjadi kering", 0.9),
+    ("G024", "Pertumbuhan panjang terhenti, sehingga daun-daun teratur seperti kipas", 0.9),
+    ("G025", "Bunga tetap tersimpan di dalam upih-upih daun", 0.9),
+    ("G026", "Ujung daun berwarna kuning, hijau jingga atau kuning cokelat", 0.9),
+    ("G027", "Pada daun yang masih muda terdapat bintik-bintik cokelat", 0.9),
+    ("G028", "Pada daun terdapat bercak klorotis", 0.9),
+    ("G029", "Daunnya berbintik-bintik kecil berwarna cokelat hitam", 0.9),
+    ("G030", "Tanaman yang terserang justru malah banyak anakanya", 0.9),
+    ("G031", "Daunnya sempit dan lancip", 0.9),
+    ("G032", "Daun memutih kemudian menguning", 0.9),
+    ("G033", "Pada satu rumpun terdapat banyak anakan", 0.9),
+    ("G034", "Pada pucuk daun bagian atas, terdapat bercak-bercak kuning dan bercak-bercak tersebut sejajar dengan tulang daun", 0.9),
+    ("G035", "Pada serangan yang berat, penyakitnya merusak titik tumbuh, dan menyebabkan matinya tanaman itu", 0.9)
+]
+
+# Membuat dictionary untuk gejala dan bobotnya
+gejala = {kode: deskripsi for kode, deskripsi, _ in gejala_list}
+bobot_gejala = {kode: bobot for kode, _, bobot in gejala_list}
+
+# Basis pengetahuan untuk penyakit dan gejalanya
+rules = {
+    "J001": {
+        "nama": "Tikus",
+        "gejala": ["G001", "G002", "G003"],
+        "solusi": "Bersihkan gulma dan semak, pasang jebakan, dan tanam serempak untuk mengurangi populasi tikus."
+    },
+    "J002": {
+        "nama": "Keong Mas",
+        "gejala": ["G004", "G005"],
+        "solusi": "Kumpulkan keong secara manual, gunakan umpan beracun, dan jaga kebersihan saluran air."
+    },
+    "J003": {
+        "nama": "Burung",
+        "gejala": ["G006", "G007"],
+        "solusi": "Gunakan orang-orangan sawah dan jaring pelindung untuk mengusir burung."
+    },
+    "J004": {
+        "nama": "Sundep (Scirpophaga innotata)",
+        "gejala": ["G008", "G009", "G010"],
+        "solusi": "Gunakan pestisida selektif dan lakukan rotasi tanaman untuk mencegah siklus hidup sundep."
+    },
+    "J005": {
+        "nama": "Ulat",
+        "gejala": ["G011", "G012"],
+        "solusi": "Gunakan insektisida berbahan aktif emamektin benzoat atau pestisida nabati."
+    },
+    "J006": {
+        "nama": "Wereng",
+        "gejala": ["G011", "G012", "G013"],
+        "solusi": "Gunakan varietas tahan wereng, tanam serempak, dan kendalikan dengan insektisida imidakloprid."
+    },
+    "J007": {
+        "nama": "Walang Sangit",
+        "gejala": ["G014", "G012", "G015"],
+        "solusi": "Gunakan perangkap alami, tanam serempak, dan semprot insektisida kontak seperti sipermetrin."
+    },
+    "J008": {
+        "nama": "Ganjur",
+        "gejala": ["G016", "G017"],
+        "solusi": "Jaga kebersihan lahan dan kendalikan dengan insektisida berbasis organofosfat."
+    },
+    "J009": {
+        "nama": "Hama Putih",
+        "gejala": ["G018", "G019"],
+        "solusi": "Semprot insektisida sistemik seperti abamektin dan gunakan varietas tahan."
+    },
+    "J010": {
+        "nama": "Orong-Orong",
+        "gejala": ["G020", "G021", "G022"],
+        "solusi": "Gunakan umpan beracun dan jaga kebersihan lahan."
+    },
+    "J011": {
+        "nama": "Penggerek Batang",
+        "gejala": ["G013", "G023", "G024", "G025"],
+        "solusi": "Gunakan insektisida sistemik dan buang bagian tanaman yang terserang."
+    },
+    "J012": {
+        "nama": "Tungro",
+        "gejala": ["G013", "G026", "G027"],
+        "solusi": "Gunakan varietas tahan dan kendalikan vektor wereng hijau."
+    },
+    "J013": {
+        "nama": "Kerdil Rumput",
+        "gejala": ["G028", "G029", "G030", "G013", "G031"],
+        "solusi": "Tanam serempak dan semprot insektisida untuk kendalikan vektor."
+    },
+    "J014": {
+        "nama": "Kerdil Kuning",
+        "gejala": ["G032", "G033", "G013"],
+        "solusi": "Gunakan varietas tahan, benih sehat, dan semprot insektisida."
+    },
+    "J015": {
+        "nama": "Kresek (Hawar Daun Bakteri)",
+        "gejala": ["G034", "G035"],
+        "solusi": "Gunakan benih sehat, semprot bakterisida, dan hindari pemupukan nitrogen berlebih."
+    }
 }
 
-# knowledge base (basis pengetahuan) untuk penyakit padi
-# Aturan (rules) yang menghubungkan penyakit dengan gejala-gejalanya dan solusinya
-rules = {
-    "P1": {"nama": "Blast", "gejala": ["G1", "G2"], "solusi": "Gunakan varietas tahan seperti Inpari 30, tanam dengan jarak cukup, hindari pupuk nitrogen berlebih, dan semprot fungisida berbahan triazol atau strobilurin."},
-    "P2": {"nama": "Hawar Daun", "gejala": ["G3"], "solusi": "Gunakan varietas tahan, musnahkan sisa tanaman sakit, beri pupuk seimbang, dan semprot fungisida seperti mankozeb."},
-    "P3": {"nama": "Hawar Pelepah", "gejala": ["G4", "G16", "G17"], "solusi": "Perbaiki drainase, hindari tanam terlalu rapat, dan semprot fungisida sistemik saat gejala awal."},
-    "P4": {"nama": "Busuk Leher", "gejala": ["G2", "G5"], "solusi": "Gunakan benih sehat, semprot fungisida saat pembungaan, dan keringkan lahan secara berkala."},
-    "P5": {"nama": "Gosong Akar", "gejala": ["G6", "G7"], "solusi": "Gunakan pupuk kandang matang, hindari genangan, dan aplikasi Trichoderma sp."},
-    "P6": {"nama": "Hawar Daun Bakteri", "gejala": ["G9", "G7"], "solusi": "Gunakan benih bersertifikat, semprot bakterisida tembaga, dan hindari pupuk nitrogen berlebih."},
-    "P7": {"nama": "Bercak Daun Bakteri", "gejala": ["G8"], "solusi": "Tanam varietas tahan, bersihkan gulma, dan semprot bakterisida berbasis tembaga."},
-    "P8": {"nama": "Tungro", "gejala": ["G9", "G10", "G11"], "solusi": "Gunakan varietas tahan seperti Inpari 33, tanam serempak, dan kendalikan wereng hijau."},
-    "P9": {"nama": "Kerdil Rumput", "gejala": ["G11", "G10"], "solusi": "Kendalikan wereng coklat, tanam serempak, dan gunakan benih sehat."},
-    "P10": {"nama": "Kerdil Hampa", "gejala": ["G11", "G12"], "solusi": "Kendalikan wereng, gunakan insektisida seperti imidakloprid, dan hindari tanam saat kemarau ekstrem."},
-    "P11": {"nama": "Busuk Batang", "gejala": ["G13", "G7", "G14"], "solusi": "Perbaiki drainase, bersihkan jerami sisa, dan semprot fungisida saat awal gejala."},
-    "P12": {"nama": "Karat Daun Padi", "gejala": ["G15"], "solusi": "Gunakan fungisida sistemik, beri pupuk kalium-fosfor, dan jaga jarak tanam optimal."},
-    "P13": {"nama": "Fusarium", "gejala": ["G18", "G19"], "solusi": "Gunakan fungisida seperti benomil, tanam varietas tahan, dan hindari tumpang sari dengan tanaman inang."}
-}
+def konsultasi(gejala_terpilih):
+    """
+    Melakukan konsultasi menggunakan metode forward chaining untuk mencocokkan gejala dengan penyakit.
+
+    Args:
+        gejala_terpilih (list): Daftar kode gejala yang dipilih pengguna.
+
+    Returns:
+        list: Daftar penyakit yang cocok dengan gejala yang dipilih, diurutkan berdasarkan bobot total.
+    """
+    hasil = []
+    for kode, data in rules.items():
+        if all(g in gejala_terpilih for g in data["gejala"]):
+            total_bobot = sum(bobot_gejala.get(g, 0) for g in data["gejala"])
+            hasil.append({
+                "kode": kode,
+                "nama": data["nama"],
+                "solusi": data["solusi"],
+                "bobot_total": round(total_bobot, 2)
+            })
+    hasil.sort(key=lambda x: x["bobot_total"], reverse=True)
+    return hasil
 
 def hitung_cf_gejala(kode_gejala, input_user, bobot_gejala):
     """
@@ -38,10 +156,10 @@ def hitung_cf_gejala(kode_gejala, input_user, bobot_gejala):
         float: Nilai CF untuk gejala tersebut.
     """
     if kode_gejala not in input_user:
-        return 0  # Jika gejala tidak ada dalam input pengguna, nilai CF adalah 0
-    cf_user = input_user[kode_gejala]  # Nilai keyakinan pengguna untuk gejala
-    bobot = bobot_gejala.get(kode_gejala, 0)  # Bobot gejala
-    return bobot * cf_user  # Mengalikan bobot dengan nilai keyakinan pengguna
+        return 0
+    cf_user = input_user[kode_gejala]
+    bobot = bobot_gejala.get(kode_gejala, 0)
+    return bobot * cf_user
 
 def gabung_cf(cf_list):
     """
@@ -54,10 +172,9 @@ def gabung_cf(cf_list):
         float: Nilai CF gabungan.
     """
     if not cf_list:
-        return 0  # Jika daftar kosong, nilai CF gabungan adalah 0
-    cf_total = cf_list[0]  # Inisialisasi dengan nilai CF pertama
+        return 0
+    cf_total = cf_list[0]
     for cf in cf_list[1:]:
-        # Formula kombinasi CF: CFtotal = CFtotal + CFbaru * (1 - CFtotal)
         cf_total = cf_total + cf * (1 - cf_total)
     return cf_total
 
@@ -71,21 +188,20 @@ def inferensi_cf(input_user):
     Returns:
         list: Daftar penyakit yang terdeteksi beserta nilai CF-nya, diurutkan dari yang tertinggi.
     """
-    hasil = []  # Menyimpan hasil inferensi
+    hasil = []
     for kode_p, data in rules.items():
-        cf_list = []  # Menyimpan nilai CF untuk setiap gejala dalam aturan
+        cf_list = []
         for g in data["gejala"]:
-            cf_g = hitung_cf_gejala(g, input_user, bobot_gejala)  # Hitung CF untuk gejala
+            cf_g = hitung_cf_gejala(g, input_user, bobot_gejala)
             if cf_g > 0:
-                cf_list.append(cf_g)  # Tambahkan ke daftar jika CF > 0
+                cf_list.append(cf_g)
         if cf_list:
-            cf_total = gabung_cf(cf_list)  # Gabungkan nilai CF
+            cf_total = gabung_cf(cf_list)
             hasil.append({
                 "kode": kode_p,
                 "nama": data["nama"],
                 "cf": round(cf_total, 3),
                 "solusi": data.get("solusi", "Belum ada solusi tersedia.")
             })
-    # Urutkan hasil berdasarkan nilai CF secara menurun
     hasil.sort(key=lambda x: x["cf"], reverse=True)
     return hasil

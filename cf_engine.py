@@ -120,29 +120,6 @@ rules = {
     }
 }
 
-def konsultasi(gejala_terpilih):
-    """
-    Melakukan konsultasi menggunakan metode forward chaining untuk mencocokkan gejala dengan penyakit.
-
-    Args:
-        gejala_terpilih (list): Daftar kode gejala yang dipilih pengguna.
-
-    Returns:
-        list: Daftar penyakit yang cocok dengan gejala yang dipilih, diurutkan berdasarkan bobot total.
-    """
-    hasil = []
-    for kode, data in rules.items():
-        if all(g in gejala_terpilih for g in data["gejala"]):
-            total_bobot = sum(bobot_gejala.get(g, 0) for g in data["gejala"])
-            hasil.append({
-                "kode": kode,
-                "nama": data["nama"],
-                "solusi": data["solusi"],
-                "bobot_total": round(total_bobot, 2)
-            })
-    hasil.sort(key=lambda x: x["bobot_total"], reverse=True)
-    return hasil
-
 def hitung_cf_gejala(kode_gejala, input_user, bobot_gejala):
     """
     Menghitung nilai CF (Certainty Factor) untuk sebuah gejala berdasarkan input pengguna.
@@ -178,6 +155,8 @@ def gabung_cf(cf_list):
         cf_total = cf_total + cf * (1 - cf_total)
     return cf_total
 
+# Inference Engine
+# Fungsi ini melakukan inferensi untuk menentukan penyakit berdasarkan gejala yang diberikan pengguna.
 def inferensi_cf(input_user):
     """
     Melakukan inferensi untuk menentukan penyakit berdasarkan gejala yang diberikan pengguna.
